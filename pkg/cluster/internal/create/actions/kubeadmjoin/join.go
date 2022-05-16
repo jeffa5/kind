@@ -18,6 +18,7 @@ limitations under the License.
 package kubeadmjoin
 
 import (
+	"fmt"
 	"strings"
 
 	"sigs.k8s.io/kind/pkg/cluster/constants"
@@ -83,6 +84,7 @@ func joinSecondaryControlPlanes(
 	// (this is not safe currently)
 	for _, node := range secondaryControlPlanes {
 		node := node // capture loop variable
+		ctx.Logger.V(3).Info(fmt.Sprintf("Joining %s", node))
 		if err := runKubeadmJoin(ctx.Logger, node); err != nil {
 			return err
 		}

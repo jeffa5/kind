@@ -11,33 +11,27 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
-        packages.clusterloader2 = pkgs.buildGoModule {
-          pname = "clusterloader2";
+        packages.kind = pkgs.buildGoModule {
+          pname = "kind";
           version = "0.1.0";
-          src = ./clusterloader2;
-          vendorSha256 = "sha256-dk9LdI+VnJlP13FWv1F0xubT9YKu5m9wQEYKTD+nuIw=";
-          postInstall = ''
-            mv $out/bin/cmd $out/bin/clusterloader2
-          '';
-          runTests = false;
+          src = ./.;
+          vendorSha256 = "sha256-8o9jjE42+apy1R/BqDK/lE9iBFnz8hlbjVLIwLdiww4=";
+          subPackages = [ "." ];
+          # runTests = false;
         };
 
-        defaultPackage = self.packages.${system}.clusterloader2;
+        defaultPackage = self.packages.${system}.kind;
 
-        apps.clusterloader2 = flake-utils.lib.mkApp {
-          drv = self.packages.${system}.clusterloader2;
+        apps.kind = flake-utils.lib.mkApp {
+          drv = self.packages.${system}.kind;
         };
 
-        defaultApp = self.apps.${system}.clusterloader2;
+        defaultApp = self.apps.${system}.kind;
 
         devShell = pkgs.mkShell {
           packages = with pkgs;
             [
               go_1_16
-              kind
-              k9s
-              kubectl
-              helm
 
               nixpkgs-fmt
               rnix-lsp

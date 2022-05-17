@@ -71,6 +71,7 @@ func CombinedOutputLines(cmd Cmd) (lines chan string, err error) {
 		for scanner.Scan() {
 			lines <- scanner.Text()
 		}
+		close(lines)
 	}()
 	return lines, err
 }

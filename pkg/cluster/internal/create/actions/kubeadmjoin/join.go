@@ -19,7 +19,6 @@ package kubeadmjoin
 
 import (
 	"fmt"
-	"strings"
 
 	"sigs.k8s.io/kind/pkg/cluster/constants"
 	"sigs.k8s.io/kind/pkg/cluster/nodes"
@@ -132,7 +131,9 @@ func runKubeadmJoin(logger log.Logger, node nodes.Node) error {
 		"--v=6",
 	)
 	lines, err := exec.CombinedOutputLines(cmd)
-	logger.V(3).Info(strings.Join(lines, "\n"))
+	for line := range lines {
+		logger.V(3).Info(line)
+	}
 	if err != nil {
 		return errors.Wrap(err, "failed to join node with kubeadm")
 	}

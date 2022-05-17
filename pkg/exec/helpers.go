@@ -60,15 +60,18 @@ func RunErrorForError(err error) *RunError {
 // CombinedOutputLines is like os/exec's cmd.CombinedOutput(),
 // but over our Cmd interface, and instead of returning the byte buffer of
 // stderr + stdout, it scans these for lines and returns a slice of output lines
-func CombinedOutputLines(cmd Cmd) (lines []string, err error) {
+func CombinedOutputLines(cmd Cmd) (lines chan string, err error) {
 	var buff bytes.Buffer
 	cmd.SetStdout(&buff)
 	cmd.SetStderr(&buff)
 	err = cmd.Run()
-	scanner := bufio.NewScanner(&buff)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
+	lines = make(chan string)
+	go func() {
+		scanner := bufio.NewScanner(&buff)
+		for scanner.Scan() {
+			lines <- scanner.Text()
+		}
+	}()
 	return lines, err
 }
 

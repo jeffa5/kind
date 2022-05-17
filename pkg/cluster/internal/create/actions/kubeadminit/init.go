@@ -18,8 +18,6 @@ limitations under the License.
 package kubeadminit
 
 import (
-	"strings"
-
 	"sigs.k8s.io/kind/pkg/errors"
 	"sigs.k8s.io/kind/pkg/exec"
 
@@ -79,7 +77,9 @@ func (a *action) Execute(ctx *actions.ActionContext) error {
 		"--v=6",
 	)
 	lines, err := exec.CombinedOutputLines(cmd)
-	ctx.Logger.V(3).Info(strings.Join(lines, "\n"))
+	for line := range lines {
+		ctx.Logger.V(3).Info(line)
+	}
 	if err != nil {
 		return errors.Wrap(err, "failed to init node with kubeadm")
 	}
